@@ -5,6 +5,11 @@ from torch.utils.data import DataLoader, TensorDataset
 from torchvision.models import resnet18
 
 
+"""
+Task: Update the training loop to use mixed precision.
+"""
+
+
 # Dummy RGB image dataset (resnet18 expects 3-channel 224x224 inputs)
 def get_dummy_loader(batch_size=32):
     x = torch.randn(512, 3, 224, 224)  # (B, C, H, W)
