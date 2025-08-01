@@ -11,19 +11,7 @@ Output: A PyTorch Dataset that reads the CSV file and returns features and label
 
 class CSVDataset(Dataset):
     def __init__(self, csv_path: str):
-        self.data = pd.read_csv(csv_path)
-        
-        # Assuming last column is the label
-        self.features = self.data.iloc[:, :-1].values.astype('float32')
-        self.labels = self.data.iloc[:, -1].values.astype('int64')
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, idx):
-        x = torch.tensor(self.features[idx])
-        y = torch.tensor(self.labels[idx])
-        return x, y
+        pass
 
 
 # Example usage

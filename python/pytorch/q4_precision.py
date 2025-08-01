@@ -25,7 +25,6 @@ def train(model, dataloader, device):
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=1e-3)
-    scaler = torch.amp.GradScaler()
 
     for epoch in range(2):
         for i, (inputs, labels) in enumerate(dataloader):
@@ -33,13 +32,8 @@ def train(model, dataloader, device):
 
             optimizer.zero_grad()
 
-            with torch.amp.autocast():
-                outputs = model(inputs)
-                loss = criterion(outputs, labels)
-
-            scaler.scale(loss).backward()
-            scaler.step(optimizer)
-            scaler.update()
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
 
             if i % 10 == 0:
                 print(f"[Epoch {epoch} | Step {i}] Loss: {loss.item():.4f}")
