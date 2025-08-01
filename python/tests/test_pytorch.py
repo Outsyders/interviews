@@ -5,7 +5,7 @@ import tempfile
 
 @pytest.mark.parametrize("input_shape", [(1, 28, 28), (3, 32, 32), (1, 64, 64)])
 def test_tensor_conversion(input_shape):
-    from python.pytorch.q1_tensor_conversion import array_to_tensor
+    from pytorch.q1_tensor_conversion import array_to_tensor
     import numpy as np
     import torch
 
@@ -36,7 +36,7 @@ def create_temp_csv(num_rows=10, num_features=3):
 
 
 def test_csv_dataloader_shapes():
-    from python.pytorch.q2_dataloader import CSVDataset
+    from pytorch.q2_dataloader import CSVDataset
     from torch.utils.data import DataLoader
     import torch
 
@@ -58,7 +58,7 @@ def test_csv_dataloader_shapes():
 
 
 def test_csv_dataset_len():
-    from python.pytorch.q2_dataloader import CSVDataset
+    from pytorch.q2_dataloader import CSVDataset
     csv_path = create_temp_csv(num_rows=12, num_features=2)
     dataset = CSVDataset(csv_path)
     assert len(dataset) == 12
@@ -66,14 +66,14 @@ def test_csv_dataset_len():
 
 
 def test_missing_file_raises_error():
-    from python.pytorch.q2_dataloader import CSVDataset
+    from pytorch.q2_dataloader import CSVDataset
     with pytest.raises(FileNotFoundError):
         _ = CSVDataset("non_existent_file.csv")
 
 
 @pytest.mark.parametrize("batch_size", [1, 4, 8])
 def test_cnn_output_shape(batch_size):
-    from python.pytorch.q3_cnn import SimpleCNN
+    from pytorch.q3_cnn import SimpleCNN
     import torch
 
     model = SimpleCNN()
