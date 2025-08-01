@@ -1,0 +1,7 @@
+torch
+numpy
+pillow
+pytest
+sqlalchemy
+pandas
+torchvision
