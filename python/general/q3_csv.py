@@ -26,34 +26,6 @@ def process_shot_manifest(file_path: str) -> List[Dict[str, Any]]:
     """
     latest_shots: Dict[str, Dict[str, Any]] = {}
     
-    try:
-        with open(file_path, 'r', newline='', encoding='utf-8') as csvfile:
-            reader = csv.DictReader(csvfile)
-            
-            for row in reader:
-                shot_name = row.get('shot_name')
-                version_str = row.get('nuke_version')
-                
-                if not shot_name or not version_str:
-                    continue
-
-                try:
-                    version_int = int(version_str)
-                    row['nuke_version'] = version_int 
-                    if shot_name not in latest_shots:
-                        latest_shots[shot_name] = row
-                    else:
-                        current_max_version = latest_shots[shot_name]['nuke_version']
-                        if version_int > current_max_version:
-                            latest_shots[shot_name] = row
-                            
-                except ValueError:
-                    continue
-                    
-    except FileNotFoundError:
-        print(f"Error: File not found at {file_path}")
-        return []
-    
     return list(latest_shots.values())
 
 

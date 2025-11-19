@@ -14,17 +14,4 @@ raw_paths = [
 ]
 
 def sanitize_paths(raw_paths: list[str]) -> list[str]:
-    from pathlib import Path
-    cleaned = set()
-
-    for p in raw_paths:
-        if not p:
-            continue
-        
-        norm = Path(p).as_posix()
-        cleaned.add(norm)
-
-    return list(cleaned)
-
-if __name__ == "__main__":
-    sanitize_paths(raw_paths)
+    return []

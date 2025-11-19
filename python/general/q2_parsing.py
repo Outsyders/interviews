@@ -1,5 +1,3 @@
-import re
-
 """
 Write a function called increment_version that takes a file path string and a version tag prefix (e.g., _v). It should find the current version number, increment it by one, and return the new file path string.
 
@@ -27,38 +25,14 @@ def increment_version(file_path: str, prefix: str = "_v") -> str:
     """
     Finds a version tag (e.g., _vXXX), increments it, and returns the new path.
     """
-    pattern = rf"({prefix})(\d+)"
-    
-    match = re.search(pattern, file_path)
-    
-    if not match:
-        return file_path
+    return ""
 
-    current_version_str = match.group(2)
-    current_version_int = int(current_version_str)
-
-    new_version_int = current_version_int + 1
-    padding_length = len(current_version_str)
-
-    new_version_str = str(new_version_int).zfill(padding_length)
-
-    return re.sub(pattern, rf"{prefix}{new_version_str}", file_path, count=1)
-
-def change_frame_padding(normalized_file_path: str) -> str:
+def change_frame_padding(file_path: str) -> str:
     """
     Replaces frame number padding (e.g., .1001.exr) with hash notation (e.g., .####.exr).
     """
-    match = re.search(r'\.(\d+)\.([^\.]+)$', normalized_file_path)
-    
-    if match:
-        frame_digits = match.group(1)
-        extension = match.group(2)
-
-        padding_length = len(frame_digits)
-        hash_padding = '#' * padding_length
-        return re.sub(r'\.(\d+)\.([^\.]+)$', f'.{hash_padding}.{extension}', normalized_file_path, count=1)
-    
-    return normalized_file_path
+        
+    return ""
 
 
 if __name__ == "__main__":

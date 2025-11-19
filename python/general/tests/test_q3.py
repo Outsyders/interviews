@@ -1,5 +1,5 @@
 import pytest
-from basic_python.q3_csv import process_shot_manifest
+from general.q3_csv import process_shot_manifest
 
 MOCK_MANIFEST_CSV = """shot_name,sg_sequence,nuke_version,sg_comp_status,comp_artist
 SH_010,SEQ_001,15,cmp,JSmith

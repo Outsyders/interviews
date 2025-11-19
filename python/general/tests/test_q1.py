@@ -1,4 +1,4 @@
-from basic_python.q1_strings_and_lists import sanitize_paths
+from general.q1_strings_and_lists import sanitize_paths
 
 def test_normalization_and_deduplication():
     """

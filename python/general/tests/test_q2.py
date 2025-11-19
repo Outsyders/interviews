@@ -1,4 +1,4 @@
-from basic_python.q2_parsing import increment_version, change_frame_padding
+from general.q2_parsing import increment_version, change_frame_padding
 
 def test_version_increment_padding():
     """Test that the version increments correctly and maintains padding."""
