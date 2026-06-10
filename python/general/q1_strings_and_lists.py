@@ -14,4 +14,12 @@ raw_paths = [
 ]
 
 def sanitize_paths(raw_paths: list[str]) -> list[str]:
-    return []
+    cleaned = []
+    seen = set()
+    for path in raw_paths:
+        # Normalize separators, then drop any trailing slash (keep leading // for UNC).
+        normalized = path.replace("\\", "/").rstrip("/")
+        if normalized not in seen:
+            seen.add(normalized)
+            cleaned.append(normalized)
+    return cleaned

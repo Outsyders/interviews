@@ -20,8 +20,13 @@ def retry(max_attempts: int = 3, base_delay: float = 0.1):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            # Write your solution here
-            pass
+            for attempt in range(1, max_attempts + 1):
+                try:
+                    return func(*args, **kwargs)
+                except Exception:
+                    if attempt == max_attempts:
+                        raise  # exhausted; let the last exception propagate
+                    time.sleep(base_delay * (2 ** (attempt - 1)))
         return wrapper
     return decorator
 

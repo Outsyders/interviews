@@ -26,14 +26,25 @@ def train(model, dataloader, device):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
+    # GradScaler prevents fp16 gradients from underflowing to zero.
+    use_amp = device.type == "cuda"
+    scaler = torch.cuda.amp.GradScaler(enabled=use_amp)
+
     for epoch in range(2):
         for i, (inputs, labels) in enumerate(dataloader):
             inputs, labels = inputs.to(device), labels.to(device)
 
             optimizer.zero_grad()
 
-            outputs = model(inputs)
-            loss = criterion(outputs, labels)
+            # Run the forward pass in mixed precision.
+            with torch.autocast(device_type=device.type, enabled=use_amp):
+                outputs = model(inputs)
+                loss = criterion(outputs, labels)
+
+            # Scale the loss, backprop, then unscale + step.
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
 
             if i % 10 == 0:
                 print(f"[Epoch {epoch} | Step {i}] Loss: {loss.item():.4f}")

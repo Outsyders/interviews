@@ -25,7 +25,23 @@ def process_shot_manifest(file_path: str) -> List[Dict[str, Any]]:
     Handles non-numeric version strings gracefully.
     """
     latest_shots: Dict[str, Dict[str, Any]] = {}
-    
+
+    try:
+        with open(file_path, newline="") as f:
+            for row in csv.DictReader(f):
+                try:
+                    version = int(row["nuke_version"])
+                except (ValueError, TypeError, KeyError):
+                    continue  # skip rows with non-numeric versions
+                shot = row["shot_name"]
+                current = latest_shots.get(shot)
+                if current is None or version > current["nuke_version"]:
+                    record = dict(row)
+                    record["nuke_version"] = version
+                    latest_shots[shot] = record
+    except FileNotFoundError:
+        return []
+
     return list(latest_shots.values())
 
 

@@ -13,4 +13,4 @@ def array_to_tensor(data: np.ndarray) -> torch.Tensor:
         device = torch.device("cuda")
     else:
         device = torch.device("cpu")
-    return torch.from_numpy(data)
+    return torch.from_numpy(data).to(device)

@@ -24,5 +24,12 @@ model = DummyModel()
 
 
 def handle(payload: dict) -> dict:
-    # Write your solution here
-    pass
+    features = payload.get("features")
+    if not isinstance(features, list) or not features:
+        raise ValueError("payload must contain a non-empty 'features' list")
+
+    start = time.perf_counter()
+    prediction = model.predict(features)
+    latency_ms = (time.perf_counter() - start) * 1000
+
+    return {"prediction": prediction, "latency_ms": latency_ms}

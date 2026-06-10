@@ -11,7 +11,17 @@ Output: A PyTorch Dataset that reads the CSV file and returns features and label
 
 class CSVDataset(Dataset):
     def __init__(self, csv_path: str):
-        pass
+        df = pd.read_csv(csv_path)  # raises FileNotFoundError for a bad path
+        self.features = df.drop(columns=["label"]).values.astype("float32")
+        self.labels = df["label"].values.astype("int64")
+
+    def __len__(self) -> int:
+        return len(self.labels)
+
+    def __getitem__(self, idx: int):
+        x = torch.tensor(self.features[idx], dtype=torch.float32)
+        y = torch.tensor(self.labels[idx], dtype=torch.long)
+        return x, y
 
 
 # Example usage

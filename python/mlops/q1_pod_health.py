@@ -25,13 +25,15 @@ RESTART_THRESHOLD = 5
 
 
 def classify_pod(pod: dict) -> str:
-    # Write your solution here
-    pass
+    if pod.get("status") != "Running":
+        return "unhealthy"
+    if pod.get("restart_count", 0) > RESTART_THRESHOLD:
+        return "unhealthy"
+    return "healthy"
 
 
 def find_unhealthy(pods: list) -> list:
-    # Write your solution here
-    pass
+    return [pod["name"] for pod in pods if classify_pod(pod) == "unhealthy"]
 
 
 if __name__ == "__main__":

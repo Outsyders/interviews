@@ -14,6 +14,8 @@ The frame number will typically appear before the file extension, preceded by a 
 Propose at least two unit tests or each function
 """
 
+import re
+
 sample_data = [
     "C:\\projects\\outsyders_test\\seq\\ABC\\ABC1010\\work_dir\\ABC1010_comp_v001.nk",
     "X:\\projects\\PROJA\\seq\\NHR\\NHR2770\\stereo_manual\\work_dir\\nk\\PROJA_NHR2770_stereo_manual_v001.nk",
@@ -25,14 +27,23 @@ def increment_version(file_path: str, prefix: str = "_v") -> str:
     """
     Finds a version tag (e.g., _vXXX), increments it, and returns the new path.
     """
-    return ""
+    match = re.search(re.escape(prefix) + r"(\d+)", file_path)
+    if not match:
+        return file_path
+    digits = match.group(1)
+    bumped = str(int(digits) + 1).zfill(len(digits))  # keep zero-padding width
+    return file_path[:match.start(1)] + bumped + file_path[match.end(1):]
 
 def change_frame_padding(file_path: str) -> str:
     """
     Replaces frame number padding (e.g., .1001.exr) with hash notation (e.g., .####.exr).
     """
-        
-    return ""
+    # A frame number is a run of digits between a dot and the file extension.
+    return re.sub(
+        r"\.(\d+)\.(\w+)$",
+        lambda m: "." + "#" * len(m.group(1)) + "." + m.group(2),
+        file_path,
+    )
 
 
 if __name__ == "__main__":

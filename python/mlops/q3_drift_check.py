@@ -25,5 +25,10 @@ e.g. PSI (Population Stability Index) or a two-sample KS test per feature.
 
 
 def detect_drift(reference: np.ndarray, incoming: np.ndarray, threshold: float) -> list:
-    # Write your solution here
-    pass
+    ref_mean = reference.mean(axis=0)
+    inc_mean = incoming.mean(axis=0)
+    ref_std = reference.std(axis=0)
+
+    # +eps guards features with zero variance against divide-by-zero.
+    shift = np.abs(inc_mean - ref_mean) / (ref_std + 1e-8)
+    return [int(i) for i in np.where(shift > threshold)[0]]

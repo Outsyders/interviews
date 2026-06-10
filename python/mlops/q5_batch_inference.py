@@ -26,8 +26,18 @@ def predict(row: dict) -> float:
 
 
 def run_batch(in_path: str, out_path: str) -> int:
-    # Write your solution here
-    pass
+    failures = 0
+    with open(in_path, newline="") as fin, open(out_path, "w", newline="") as fout:
+        reader = csv.DictReader(fin)
+        writer = csv.writer(fout)
+        writer.writerow(["id", "prediction"])
+        for row in reader:
+            try:
+                writer.writerow([row["id"], predict(row)])
+            except Exception as exc:
+                failures += 1
+                print(f"skipping row {row.get('id')}: {exc}")
+    return failures
 
 
 if __name__ == "__main__":
