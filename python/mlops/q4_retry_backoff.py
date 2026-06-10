@@ -4,21 +4,19 @@ import functools
 """
 Task: Write a retry decorator with exponential backoff.
 
-  retry(max_attempts=3, base_delay=0.1, retryable=(ConnectionError, TimeoutError))
+  retry(max_attempts=3, base_delay=0.1)
 
 Behavior:
   - call the wrapped function; on success, return its result
-  - if it raises a RETRYABLE exception, wait base_delay * (2 ** (attempt - 1))
-    seconds, then try again, up to max_attempts total attempts
-  - if it raises a NON-retryable exception (e.g. ValueError), do not retry —
-    re-raise immediately
+  - if it raises, wait base_delay * (2 ** (attempt - 1)) seconds, then try
+    again, up to max_attempts total attempts
   - after exhausting all attempts, re-raise the last exception (do not swallow it)
 
 A flaky function is provided below to exercise the decorator.
 """
 
 
-def retry(max_attempts: int = 3, base_delay: float = 0.1, retryable: tuple = (ConnectionError, TimeoutError)):
+def retry(max_attempts: int = 3, base_delay: float = 0.1):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):

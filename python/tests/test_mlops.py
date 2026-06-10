@@ -23,8 +23,8 @@ def test_classify_individual_pods():
     assert classify_pod(by_name["web-2"]) == "unhealthy"        # CrashLoopBackOff
     assert classify_pod(by_name["cache-1"]) == "unhealthy"      # OOMKilled
     assert classify_pod(by_name["worker-1"]) == "unhealthy"     # restarts over threshold
-    assert classify_pod(by_name["scheduler-1"]) == "unhealthy"  # Unschedulable
-    assert classify_pod(by_name["db-1"]) == "unhealthy"         # stuck Terminating
+    assert classify_pod(by_name["scheduler-1"]) == "unhealthy"  # Pending
+    assert classify_pod(by_name["db-1"]) == "unhealthy"         # Terminating
 
 
 def test_find_unhealthy_names():
@@ -34,29 +34,28 @@ def test_find_unhealthy_names():
     assert set(result) == {"web-2", "cache-1", "worker-1", "scheduler-1", "db-1"}
 
 
-def test_missing_keys_do_not_crash():
+def test_missing_restart_count_treated_as_zero():
     from mlops.q1_pod_health import classify_pod
 
-    # api-1 has no deletion_timestamp key at all.
-    assert classify_pod({"name": "x", "phase": "Running"}) == "healthy"
+    # api-1 has no restart_count key at all.
+    assert classify_pod({"name": "x", "status": "Running"}) == "healthy"
 
 
 # --- Task 2: inference handler ----------------------------------------------
 def test_inference_handler():
-    pytest.importorskip("fastapi")
-    from fastapi.testclient import TestClient
-    from mlops.q2_inference_handler import app
+    from mlops.q2_inference_handler import handle
 
-    client = TestClient(app)
+    out = handle({"features": [1.0, 2.0, 3.0]})
+    assert out["prediction"] == 1
+    assert out["latency_ms"] >= 0
 
-    ok = client.post("/predict", json={"features": [1.0, 2.0, 3.0]})
-    assert ok.status_code == 200
-    body = ok.json()
-    assert body["prediction"] == 1
-    assert "latency_ms" in body and body["latency_ms"] >= 0
 
-    bad = client.post("/predict", json={"features": "not-a-list"})
-    assert bad.status_code in (400, 422)
+@pytest.mark.parametrize("bad", [{}, {"features": "not-a-list"}, {"features": []}])
+def test_inference_handler_rejects_bad_input(bad):
+    from mlops.q2_inference_handler import handle
+
+    with pytest.raises(ValueError):
+        handle(bad)
 
 
 # --- Task 3: drift check ----------------------------------------------------
@@ -92,16 +91,6 @@ def test_retry_succeeds_after_transient_failures():
     wrapped = retry(max_attempts=3, base_delay=0.0)(flaky)
     assert wrapped() == "ok"
     assert state["calls"] == 3
-
-
-def test_retry_does_not_retry_non_retryable():
-    from mlops.q4_retry_backoff import retry, make_flaky
-
-    flaky, state = make_flaky(fail_times=5, exc=ValueError("bad input"))
-    wrapped = retry(max_attempts=3, base_delay=0.0)(flaky)
-    with pytest.raises(ValueError):
-        wrapped()
-    assert state["calls"] == 1  # no retries on a non-retryable error
 
 
 def test_retry_reraises_after_exhausting():

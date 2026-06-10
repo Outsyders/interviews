@@ -13,14 +13,20 @@ PYTHON ?= python
 PIP    := $(PYTHON) -m pip
 PYTEST := $(PYTHON) -m pytest -vvv
 
-SECTIONS := general pytorch mlops
+# Every known section. Used to generate the per-section targets below.
+ALL_SECTIONS := general pytorch mlops
+
+# Which sections `install` / `test` act on. Override to pick specific modules:
+#   make install SECTIONS=mlops
+#   make install SECTIONS="general mlops"
+SECTIONS ?= $(ALL_SECTIONS)
 
 .DEFAULT_GOAL := help
-.PHONY: help install upgrade-pip test clean $(SECTIONS) \
-        $(addprefix setup-,$(SECTIONS)) $(addprefix test-,$(SECTIONS))
+.PHONY: help install upgrade-pip test clean $(ALL_SECTIONS) \
+        $(addprefix setup-,$(ALL_SECTIONS)) $(addprefix test-,$(ALL_SECTIONS))
 
 help:
-	@echo "Sections: $(SECTIONS)"
+	@echo "Sections: $(ALL_SECTIONS)"
 	@echo
 	@echo "Set up and test one section (installs only that section's deps):"
 	@echo "  make general      basic Python questions (no third-party deps)"
@@ -31,20 +37,28 @@ help:
 	@echo "  make setup-<sec>  install just that section's dependencies"
 	@echo "  make test-<sec>   run just that section's tests (no install)"
 	@echo
+	@echo "Pick specific modules with SECTIONS (default: all):"
+	@echo "  make install SECTIONS=mlops"
+	@echo "  make install SECTIONS=\"general mlops\""
+	@echo "  make test    SECTIONS=pytorch"
+	@echo
 	@echo "Whole repo:"
-	@echo "  make install      install every section's dependencies"
-	@echo "  make test         run all tests"
+	@echo "  make install      install selected sections' dependencies"
+	@echo "  make test         run selected sections' tests"
 	@echo "  make clean        remove caches and generated files"
 
 upgrade-pip:
 	$(PIP) install --upgrade pip
 
-# --- Whole repo -------------------------------------------------------------
+# --- Selected sections (all by default; narrow with SECTIONS=...) -----------
 install: upgrade-pip
-	$(PIP) install -r requirements.txt
+	@for s in $(SECTIONS); do \
+	  echo "==> installing '$$s' dependencies"; \
+	  $(PIP) install -r requirements/$$s.txt || exit 1; \
+	done
 
 test:
-	$(PYTEST)
+	$(PYTEST) $(foreach s,$(SECTIONS),tests/test_$(s).py)
 
 # --- Per-section: setup deps, then run that section's tests -----------------
 # `make <section>` is the one-shot "set up and verify" entry point.
@@ -56,7 +70,7 @@ test-$(1):
 	$$(PYTEST) tests/test_$(1).py
 $(1): setup-$(1) test-$(1)
 endef
-$(foreach s,$(SECTIONS),$(eval $(call section_rules,$(s))))
+$(foreach s,$(ALL_SECTIONS),$(eval $(call section_rules,$(s))))
 
 clean:
 	rm -rf .pytest_cache **/__pycache__ */__pycache__ tests/__pycache__ \

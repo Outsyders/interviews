@@ -10,7 +10,7 @@ candidate (or interviewer) can set up and run just the part they need.
 |-----------|---------------|------------------------|-------------------------------|-------|
 | `general` | `general/`    | `tests/test_general.py`| none (pure Python)            | strings, matrices, LRU cache |
 | `pytorch` | `pytorch/`    | `tests/test_pytorch.py`| torch, torchvision, numpy, …  | tensors, datasets, CNNs, mixed precision |
-| `mlops`   | `mlops/`      | `tests/test_mlops.py`  | fastapi, httpx, numpy, pandas | k8s health, serving, drift, retries, batch jobs |
+| `mlops`   | `mlops/`      | `tests/test_mlops.py`  | numpy, pandas                 | k8s health, serving, drift, retries, batch jobs |
 
 Each question file has a task docstring and a stub to fill in; provided data and
 helpers are already written. The tests ship red — they pass once the stub is

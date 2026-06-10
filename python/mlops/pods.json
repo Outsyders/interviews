@@ -1,57 +1,9 @@
 [
-  {
-    "name": "web-1",
-    "phase": "Running",
-    "restart_count": 0,
-    "container_state": "running",
-    "reason": null,
-    "deletion_timestamp": null
-  },
-  {
-    "name": "api-1",
-    "phase": "Running",
-    "restart_count": 2,
-    "container_state": "running",
-    "reason": null
-  },
-  {
-    "name": "web-2",
-    "phase": "Running",
-    "restart_count": 7,
-    "container_state": "waiting",
-    "reason": "CrashLoopBackOff",
-    "deletion_timestamp": null
-  },
-  {
-    "name": "cache-1",
-    "phase": "Running",
-    "restart_count": 3,
-    "container_state": "terminated",
-    "reason": "OOMKilled",
-    "deletion_timestamp": null
-  },
-  {
-    "name": "worker-1",
-    "phase": "Running",
-    "restart_count": 12,
-    "container_state": "running",
-    "reason": null,
-    "deletion_timestamp": null
-  },
-  {
-    "name": "scheduler-1",
-    "phase": "Pending",
-    "restart_count": 0,
-    "container_state": "waiting",
-    "reason": "Unschedulable",
-    "deletion_timestamp": null
-  },
-  {
-    "name": "db-1",
-    "phase": "Running",
-    "restart_count": 1,
-    "container_state": "running",
-    "reason": null,
-    "deletion_timestamp": "2026-06-09T10:14:22Z"
-  }
+  { "name": "web-1",       "status": "Running",          "restart_count": 0 },
+  { "name": "api-1",       "status": "Running"                              },
+  { "name": "web-2",       "status": "CrashLoopBackOff",  "restart_count": 7 },
+  { "name": "cache-1",     "status": "OOMKilled",         "restart_count": 3 },
+  { "name": "worker-1",    "status": "Running",           "restart_count": 12 },
+  { "name": "scheduler-1", "status": "Pending",           "restart_count": 0 },
+  { "name": "db-1",        "status": "Terminating",       "restart_count": 1 }
 ]

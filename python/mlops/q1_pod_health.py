@@ -6,23 +6,15 @@ Task: Classify Kubernetes pods as healthy or unhealthy.
 
 You are given pods.json, a list of simplified pod dicts. Each pod looks like:
 
-    {
-        "name": "web-1",
-        "phase": "Running",            # Running | Pending | Succeeded | Failed
-        "restart_count": 0,
-        "container_state": "running",  # running | waiting | terminated
-        "reason": null,                # e.g. CrashLoopBackOff, OOMKilled, Unschedulable
-        "deletion_timestamp": null     # set (a timestamp string) while the pod is terminating
-    }
+    {"name": "web-1", "status": "Running", "restart_count": 0}
 
-Note: not every key is guaranteed to be present on every pod.
+A pod is HEALTHY only when:
+  - its status is "Running", and
+  - its restart_count is at most RESTART_THRESHOLD
 
-Treat a pod as UNHEALTHY if any of these hold:
-  - container is waiting with reason "CrashLoopBackOff"
-  - container was terminated with reason "OOMKilled"
-  - restart_count exceeds RESTART_THRESHOLD
-  - phase is "Pending" because it cannot be scheduled (reason "Unschedulable")
-  - it is stuck Terminating (deletion_timestamp is set but the pod is still here)
+Any other status (e.g. "CrashLoopBackOff", "OOMKilled", "Pending",
+"Terminating") is unhealthy. Note: restart_count may be missing — treat a
+missing count as 0.
 
 Implement:
   classify_pod(pod: dict) -> str            # "healthy" or "unhealthy"

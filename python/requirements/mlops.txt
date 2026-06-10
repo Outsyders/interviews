@@ -2,5 +2,3 @@
 -r base.txt
 numpy
 pandas
-fastapi
-httpx
