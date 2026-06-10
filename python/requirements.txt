@@ -1,7 +1,6 @@
-torch
-numpy
-pillow
-pytest
-sqlalchemy
-pandas
-torchvision
+# Everything — installed by `make install`.
+# Per-section dependency sets live in requirements/ and are used by the
+# per-section make targets (make general / make pytorch / make mlops).
+-r requirements/general.txt
+-r requirements/pytorch.txt
+-r requirements/mlops.txt

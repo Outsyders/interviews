@@ -1,0 +1,2 @@
+# Section: general (pure Python — no third-party runtime deps)
+-r base.txt

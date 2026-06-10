@@ -1,0 +1,7 @@
+# Section: pytorch
+-r base.txt
+numpy
+pandas
+pillow
+torch
+torchvision

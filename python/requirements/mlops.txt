@@ -1,0 +1,6 @@
+# Section: mlops
+-r base.txt
+numpy
+pandas
+fastapi
+httpx
