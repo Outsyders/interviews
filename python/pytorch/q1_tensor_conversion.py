@@ -9,4 +9,8 @@ Output: A PyTorch tensor with the same shape and data type as the NumPy array.
 
 
 def array_to_tensor(data: np.ndarray) -> torch.Tensor:
-    return None
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+    else:
+        device = torch.device("cpu")
+    return torch.from_numpy(data)
